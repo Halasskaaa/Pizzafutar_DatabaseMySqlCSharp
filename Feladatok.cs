@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Pizzafutar
 {
@@ -11,7 +12,7 @@ namespace Pizzafutar
         {
             Adatbazis a = new Adatbazis();
             lista = a.Feltolt();
-            PizzaAr();
+            //PizzaAr();
             Olcso3();
 
         }
@@ -28,6 +29,36 @@ namespace Pizzafutar
         private void Olcso3()
         {
             Console.WriteLine("1500Ft-nál olcsóbb pizzák:");
+            var eredmeny = lista
+                .Where(p => p.Pizza.Ar < 1500)
+                .Select(pizza => new
+                {
+                    pizza.Pizza.Nev,
+                    pizza.Pizza.Meret,
+                    pizza.Pizza.Ar
+                })
+                .GroupBy(p => new {p.Nev, p.Meret, p.Ar})
+                .Select(p => p.First())
+                .OrderBy(p => p.Meret)
+                .ThenBy(p => p.Nev);
+
+            foreach (var p in eredmeny)
+            {
+                Console.WriteLine($"{p.Nev} - {p.Meret} - {p.Ar}Ft");
+            }
+        }
+
+        private void Nepszeru4()
+        {
+//            SELECT
+//    pizza.Nev, 
+//    pizza.Meret, 
+//    COUNT(*) AS Dbszam
+//FROM rendeles
+//JOIN pizza ON rendeles.PizzaID = pizza.ID
+//GROUP BY pizza.Nev, pizza.Meret
+//ORDER BY Dbszam DESC
+//LIMIT 1;
         }
     }
 }
